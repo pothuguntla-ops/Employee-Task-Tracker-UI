@@ -1,0 +1,21 @@
+<section class="card shadow-sm border-0 h-100">
+  <div class="card-body p-4">
+    <div class="section-heading">
+      <p>Team</p>
+      <h2>Employees</h2>
+    </div>
+
+    <div class="list-group list-group-flush">
+      @for (employee of employees; track employee.id) {
+        <article class="list-group-item employee-row px-0">
+          <div class="avatar">{{ employee.name.charAt(0) }}</div>
+          <div>
+            <h3>{{ employee.name }}</h3>
+            <p>{{ employee.role }}</p>
+            <span>{{ employee.department }}</span>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

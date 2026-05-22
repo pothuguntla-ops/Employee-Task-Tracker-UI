@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-shell {
+  background: #eef5f9;
+  color: #102a43;
+  min-height: 100vh;
+}
+
+.container-xl {
+  max-width: 1180px;
+}
+
+.app-header p {
+  color: #2b7a78;
+  letter-spacing: 0.1em;
+}

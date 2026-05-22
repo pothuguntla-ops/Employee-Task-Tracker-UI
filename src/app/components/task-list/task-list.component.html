@@ -1,0 +1,64 @@
+<section class="card shadow-sm border-0">
+  <div class="card-body p-4">
+    <div class="section-heading">
+      <p>Work queue</p>
+      <h2>Tasks</h2>
+    </div>
+
+    <div class="btn-group filter-group mb-3" role="group" aria-label="Filter tasks by status">
+      @for (filter of filterOptions; track filter) {
+        <button
+          class="btn"
+          type="button"
+          [class.btn-primary]="selectedFilter === filter"
+          [class.btn-outline-primary]="selectedFilter !== filter"
+          (click)="setFilter(filter)"
+        >
+          {{ filter }}
+        </button>
+      }
+    </div>
+
+    <div class="row g-3">
+      @for (task of tasks$ | async; track task.id) {
+        <div class="col-12 col-xl-6">
+          <article class="task-card h-100">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+              <div>
+                <h3>{{ task.title }}</h3>
+                <p>{{ task.description }}</p>
+              </div>
+              <span
+                class="badge rounded-pill align-self-start"
+                [class.text-bg-success]="task.status === 'Completed'"
+                [class.text-bg-warning]="task.status !== 'Completed'"
+              >
+                {{ task.status }}
+              </span>
+            </div>
+
+            <div class="task-meta">
+              <span>Owner: {{ getEmployeeName(task.employeeId) }}</span>
+              <span>Due: {{ task.dueDate | date: 'mediumDate' }}</span>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row gap-2">
+              <select class="form-select" [value]="task.status" (change)="updateStatus(task.id, $event)">
+                @for (status of statuses; track status) {
+                  <option [value]="status">{{ status }}</option>
+                }
+              </select>
+              <button class="btn btn-outline-danger fw-semibold" type="button" (click)="deleteTask(task.id)">
+                Delete
+              </button>
+            </div>
+          </article>
+        </div>
+      } @empty {
+        <div class="col-12">
+          <div class="alert alert-secondary mb-0">No tasks yet. Add one to get started.</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #eef5f9;
+  color: #102a43;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+app-root,
+app-add-task,
+app-employee-list,
+app-task-list {
+  display: block;
+}

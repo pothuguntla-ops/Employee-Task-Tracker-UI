@@ -1,0 +1,90 @@
+<section class="card shadow-sm border-0 h-100">
+  <div class="card-body p-4">
+    <div class="section-heading">
+      <p>New assignment</p>
+      <h2>Add Task</h2>
+    </div>
+
+    <form class="row g-3" (ngSubmit)="addTask()" #taskForm="ngForm">
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="taskTitle">Task title</label>
+        <input
+          class="form-control"
+          id="taskTitle"
+          type="text"
+          name="title"
+          placeholder="Enter task title"
+          required
+          [(ngModel)]="title"
+          #titleInput="ngModel"
+          [class.is-invalid]="titleInput.invalid && titleInput.touched"
+        />
+        @if (titleInput.invalid && titleInput.touched) {
+          <div class="invalid-feedback">Task title is required.</div>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="taskDescription">Description</label>
+        <textarea
+          class="form-control"
+          id="taskDescription"
+          name="description"
+          rows="4"
+          placeholder="Add task details"
+          required
+          [(ngModel)]="description"
+          #descriptionInput="ngModel"
+          [class.is-invalid]="descriptionInput.invalid && descriptionInput.touched"
+        ></textarea>
+        @if (descriptionInput.invalid && descriptionInput.touched) {
+          <div class="invalid-feedback">Description is required.</div>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label fw-semibold" for="employeeId">Assign to</label>
+        <select
+          class="form-select"
+          id="employeeId"
+          name="employeeId"
+          required
+          [(ngModel)]="employeeId"
+          #employeeInput="ngModel"
+          [class.is-invalid]="employeeInput.invalid && employeeInput.touched"
+        >
+          <option [ngValue]="null" disabled>Select employee</option>
+          @for (employee of employees; track employee.id) {
+            <option [ngValue]="employee.id">{{ employee.name }}</option>
+          }
+        </select>
+        @if (employeeInput.invalid && employeeInput.touched) {
+          <div class="invalid-feedback">Please select an employee.</div>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label fw-semibold" for="dueDate">Due date</label>
+        <input
+          class="form-control"
+          id="dueDate"
+          type="date"
+          name="dueDate"
+          required
+          [(ngModel)]="dueDate"
+          #dueDateInput="ngModel"
+          [class.is-invalid]="dueDateInput.invalid && dueDateInput.touched"
+        />
+        @if (dueDateInput.invalid && dueDateInput.touched) {
+          <div class="invalid-feedback">Due date is required.</div>
+        }
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary w-100 fw-bold" type="submit" [disabled]="taskForm.invalid">
+          Add Task
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
