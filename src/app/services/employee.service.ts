@@ -1,22 +1,39 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Employee } from '../models/employee';
+
+export type CreateEmployeeRequest = Omit<Employee, 'id'>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
-  private readonly employees: Employee[] = [
-    { id: 1, name: 'Aarav Sharma', role: 'Frontend Developer', department: 'Engineering' },
-    { id: 2, name: 'Maya Patel', role: 'QA Analyst', department: 'Quality' },
-    { id: 3, name: 'Noah Williams', role: 'Project Manager', department: 'Operations' },
-    { id: 4, name: 'Sophia Chen', role: 'UX Designer', department: 'Design' }
-  ];
+  private readonly apiUrl = 'http://localhost:8080/api/employees';
+  private readonly employeesSubject = new BehaviorSubject<Employee[]>([]);
 
-  getEmployees(): Employee[] {
-    return [...this.employees];
+  constructor(private readonly http: HttpClient) {}
+
+  getEmployees(): Observable<Employee[]> {
+    return this.employeesSubject.asObservable();
+  }
+
+  loadEmployees(): void {
+    this.http.get<Employee[]>(this.apiUrl).subscribe({
+      next: (employees) => this.employeesSubject.next(employees),
+      error: (error) => console.error('Failed to load employees', error)
+    });
+  }
+
+  addEmployee(employee: CreateEmployeeRequest): Observable<Employee> {
+    return this.http.post<Employee>(this.apiUrl, employee).pipe(
+      tap((createdEmployee) => {
+        this.employeesSubject.next([...this.employeesSubject.value, createdEmployee]);
+      })
+    );
   }
 
   getEmployeeById(id: number): Employee | undefined {
-    return this.employees.find((employee) => employee.id === id);
+    return this.employeesSubject.value.find((employee) => employee.id === id);
   }
 }

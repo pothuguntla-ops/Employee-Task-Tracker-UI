@@ -5,16 +5,81 @@
       <h2>Employees</h2>
     </div>
 
+    <form class="row g-3 mb-4" (ngSubmit)="addEmployee(employeeForm)" #employeeForm="ngForm">
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="employeeName">Name</label>
+        <input
+          class="form-control"
+          id="employeeName"
+          type="text"
+          name="name"
+          placeholder=""
+          required
+          [(ngModel)]="name"
+          #nameInput="ngModel"
+          [class.is-invalid]="nameInput.invalid && nameInput.touched"
+        />
+        @if (nameInput.invalid && nameInput.touched) {
+          <div class="invalid-feedback">Employee name is required.</div>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="employeeEmail">Email</label>
+        <input
+          class="form-control"
+          id="employeeEmail"
+          type="email"
+          name="email"
+          placeholder=""
+          required
+          email
+          [(ngModel)]="email"
+          #emailInput="ngModel"
+          [class.is-invalid]="emailInput.invalid && emailInput.touched"
+        />
+        @if (emailInput.invalid && emailInput.touched) {
+          <div class="invalid-feedback">Enter a valid email.</div>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="employeeRole">Role</label>
+        <input
+          class="form-control"
+          id="employeeRole"
+          type="text"
+          name="role"
+          placeholder=""
+          required
+          [(ngModel)]="role"
+          #roleInput="ngModel"
+          [class.is-invalid]="roleInput.invalid && roleInput.touched"
+        />
+        @if (roleInput.invalid && roleInput.touched) {
+          <div class="invalid-feedback">Role is required.</div>
+        }
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary w-100 fw-bold" type="submit" [disabled]="employeeForm.invalid">
+          Add Employee
+        </button>
+      </div>
+    </form>
+
     <div class="list-group list-group-flush">
-      @for (employee of employees; track employee.id) {
+      @for (employee of employees$ | async; track employee.id) {
         <article class="list-group-item employee-row px-0">
           <div class="avatar">{{ employee.name.charAt(0) }}</div>
           <div>
             <h3>{{ employee.name }}</h3>
             <p>{{ employee.role }}</p>
-            <span>{{ employee.department }}</span>
+            <span>{{ employee.email }}</span>
           </div>
         </article>
+      } @empty {
+        <div class="alert alert-secondary mb-0">No employees yet.</div>
       }
     </div>
   </div>

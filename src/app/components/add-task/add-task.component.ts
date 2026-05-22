@@ -1,32 +1,37 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { Employee } from '../../models/employee';
+import { TaskStatus } from '../../models/task';
 import { EmployeeService } from '../../services/employee.service';
 import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-add-task',
-  imports: [FormsModule],
+  imports: [AsyncPipe, FormsModule],
   templateUrl: './add-task.component.html',
   styleUrl: './add-task.component.css'
 })
 export class AddTaskComponent {
-  employees: Employee[] = [];
+  employees$: Observable<Employee[]>;
+  statuses: TaskStatus[] = ['OPEN', 'IN_PROGRESS', 'DONE'];
 
   title = '';
   description = '';
   employeeId: number | null = null;
-  dueDate = '';
+  status: TaskStatus = 'OPEN';
 
   constructor(
     private readonly employeeService: EmployeeService,
     private readonly taskService: TaskService
   ) {
-    this.employees = this.employeeService.getEmployees();
+    this.employees$ = this.employeeService.getEmployees();
+    this.employeeService.loadEmployees();
   }
 
-  addTask(): void {
-    if (!this.title.trim() || !this.description.trim() || !this.employeeId || !this.dueDate) {
+  addTask(taskForm: NgForm): void {
+    if (taskForm.invalid || !this.employeeId) {
       return;
     }
 
@@ -34,12 +39,17 @@ export class AddTaskComponent {
       title: this.title.trim(),
       description: this.description.trim(),
       employeeId: Number(this.employeeId),
-      dueDate: this.dueDate
+      status: this.status
+    }).subscribe({
+      next: () => {
+        taskForm.resetForm({
+          title: '',
+          description: '',
+          employeeId: null,
+          status: 'OPEN'
+        });
+      },
+      error: (error) => console.error('Failed to add task', error)
     });
-
-    this.title = '';
-    this.description = '';
-    this.employeeId = null;
-    this.dueDate = '';
   }
 }

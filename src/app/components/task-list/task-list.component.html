@@ -30,27 +30,31 @@
               </div>
               <span
                 class="badge rounded-pill align-self-start"
-                [class.text-bg-success]="task.status === 'Completed'"
-                [class.text-bg-warning]="task.status !== 'Completed'"
+                [class.text-bg-success]="task.status === 'DONE'"
+                [class.text-bg-warning]="task.status === 'IN_PROGRESS'"
+                [class.text-bg-secondary]="task.status === 'OPEN'"
               >
-                {{ task.status }}
+                {{ getStatusLabel(task.status) }}
               </span>
             </div>
 
             <div class="task-meta">
               <span>Owner: {{ getEmployeeName(task.employeeId) }}</span>
-              <span>Due: {{ task.dueDate | date: 'mediumDate' }}</span>
+              <span>Employee ID: {{ task.employeeId }}</span>
             </div>
 
-            <div class="d-flex flex-column flex-sm-row gap-2">
-              <select class="form-select" [value]="task.status" (change)="updateStatus(task.id, $event)">
+            <div>
+              <label class="form-label fw-semibold" [for]="'status-' + task.id">Update status</label>
+              <select
+                class="form-select"
+                [id]="'status-' + task.id"
+                [value]="task.status"
+                (change)="updateStatus(task.id, $event)"
+              >
                 @for (status of statuses; track status) {
-                  <option [value]="status">{{ status }}</option>
+                  <option [value]="status">{{ getStatusLabel(status) }}</option>
                 }
               </select>
-              <button class="btn btn-outline-danger fw-semibold" type="button" (click)="deleteTask(task.id)">
-                Delete
-              </button>
             </div>
           </article>
         </div>

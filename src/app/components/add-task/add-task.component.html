@@ -5,7 +5,7 @@
       <h2>Add Task</h2>
     </div>
 
-    <form class="row g-3" (ngSubmit)="addTask()" #taskForm="ngForm">
+    <form class="row g-3" (ngSubmit)="addTask(taskForm)" #taskForm="ngForm">
       <div class="col-12">
         <label class="form-label fw-semibold" for="taskTitle">Task title</label>
         <input
@@ -54,7 +54,7 @@
           [class.is-invalid]="employeeInput.invalid && employeeInput.touched"
         >
           <option [ngValue]="null" disabled>Select employee</option>
-          @for (employee of employees; track employee.id) {
+          @for (employee of employees$ | async; track employee.id) {
             <option [ngValue]="employee.id">{{ employee.name }}</option>
           }
         </select>
@@ -64,21 +64,21 @@
       </div>
 
       <div class="col-12 col-md-6">
-        <label class="form-label fw-semibold" for="dueDate">Due date</label>
-        <input
-          class="form-control"
-          id="dueDate"
-          type="date"
-          name="dueDate"
-          required
-          [(ngModel)]="dueDate"
-          #dueDateInput="ngModel"
-          [class.is-invalid]="dueDateInput.invalid && dueDateInput.touched"
-        />
-        @if (dueDateInput.invalid && dueDateInput.touched) {
-          <div class="invalid-feedback">Due date is required.</div>
-        }
+        <label class="form-label fw-semibold" for="status">Status</label>
+        <select class="form-select" id="status" name="status" required [(ngModel)]="status">
+          @for (taskStatus of statuses; track taskStatus) {
+            <option [ngValue]="taskStatus">{{ taskStatus }}</option>
+          }
+        </select>
       </div>
+
+      @if ((employees$ | async)?.length === 0) {
+        <div class="col-12">
+          <div class="alert alert-warning mb-0">
+            Add an employee first, then assign a task.
+          </div>
+        </div>
+      }
 
       <div class="col-12">
         <button class="btn btn-primary w-100 fw-bold" type="submit" [disabled]="taskForm.invalid">

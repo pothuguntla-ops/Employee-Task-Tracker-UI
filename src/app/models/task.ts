@@ -1,10 +1,9 @@
-export type TaskStatus = 'Pending' | 'In Progress' | 'Completed';
+export type TaskStatus = 'OPEN' | 'IN_PROGRESS' | 'DONE';
 
 export interface EmployeeTask {
   id: number;
   title: string;
   description: string;
   employeeId: number;
-  dueDate: string;
   status: TaskStatus;
 }
